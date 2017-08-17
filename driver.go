@@ -247,7 +247,7 @@ func (d cephRBDVolumeDriver) createImage(r *dkvolume.CreateRequest) error {
 		if !*canCreateVolumes {
 			errString := fmt.Sprintf("Ceph RBD Image not found: %s", name)
 			log.Println("ERROR: " + errString)
-			err:= errors.New(errString)
+			err := errors.New(errString)
 			return err
 		}
 		// try to create it ... use size and default fs-type
@@ -525,7 +525,7 @@ func (d cephRBDVolumeDriver) Mount(r dkvolume.MountRequest) dkvolume.MountRespon
 //    respective paths on the host filesystem (where the volumes have been
 //    made available).
 //
-func (d cephRBDVolumeDriver) List(r dkvolume.CreateRequest) dkvolume.ListResponse{
+func (d cephRBDVolumeDriver) List() (*dkvolume.ListResponse, error) {
 	vols := make([]*dkvolume.Volume, 0, len(d.volumes))
 	// for each registered mountpoint
 	for k, v := range d.volumes {
@@ -537,7 +537,7 @@ func (d cephRBDVolumeDriver) List(r dkvolume.CreateRequest) dkvolume.ListRespons
 	}
 
 	log.Printf("INFO: List request => %s", vols)
-	return dkvolume.ListResponse{Volumes: vols}
+	return &dkvolume.ListResponse{Volumes: vols}, nil
 }
 
 // Get the volume info.
@@ -554,7 +554,7 @@ func (d cephRBDVolumeDriver) List(r dkvolume.CreateRequest) dkvolume.ListRespons
 //    path on the host filesystem where the volume has been made available,
 //    and/or a string error if an error occurred.
 //
-func (d cephRBDVolumeDriver) Get(r dkvolume.CreateRequest) dkvolume.GetResponse{
+func (d cephRBDVolumeDriver) Get(r dkvolume.CreateRequest) dkvolume.GetResponse {
 	// parse full image name for optional/default pieces
 	pool, name, _, err := d.parseImagePoolNameSize(r.Name)
 	if err != nil {
