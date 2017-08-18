@@ -560,7 +560,7 @@ func (d cephRBDVolumeDriver) Get(r *dkvolume.GetRequest) (*dkvolume.GetResponse,
 	pool, name, _, err := d.parseImagePoolNameSize(r.Name)
 	if err != nil {
 		log.Printf("ERROR: parsing volume: %s", err)
-		return dkvolume.GetResponse{Err: err.Error()}, err
+		return &dkvolume.GetResponse{Err: err.Error()}, err
 	}
 
 	log.Printf("INFO: pool %s, name %s", pool, name)
@@ -579,7 +579,7 @@ func (d cephRBDVolumeDriver) Get(r *dkvolume.GetRequest) (*dkvolume.GetResponse,
 	exists, err := d.rbdImageExists(pool, name)
 	if err != nil {
 		log.Printf("WARN: checking for RBD Image: %s", err)
-		return dkvolume.GetResponse{Err: err.Error()}, err
+		return &dkvolume.GetResponse{Err: err.Error()}, err
 	}
 	mountPath := d.mountpoint(pool, name)
 	if !exists {
@@ -614,12 +614,12 @@ func (d cephRBDVolumeDriver) Path(r *dkvolume.PathRequest) (*dkvolume.PathRespon
 	pool, name, _, err := d.parseImagePoolNameSize(r.Name)
 	if err != nil {
 		log.Printf("ERROR: parsing volume: %s", err)
-		return &dkvolume.MountResponse{Err: err.Error()}, err
+		return &dkvolume.PathResponse{Err: err.Error()}, err
 	}
 
 	mountPath := d.mountpoint(pool, name)
 	log.Printf("INFO: API Path request(%s) => %s", name, mountPath)
-	return &dkvolume.MountResponse{Mountpoint: mountPath}, nil
+	return &dkvolume.PathResponse{Mountpoint: mountPath}, nil
 }
 
 // POST /VolumeDriver.Unmount
